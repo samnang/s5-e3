@@ -17,7 +17,7 @@ module BSTree
     end
 
     def find(value)
-      return nil if root_empty?
+      return if root_empty?
 
       @root.find(value)
     end
@@ -27,7 +27,7 @@ module BSTree
     def remove(value)
       node = find(value)
 
-      return nil if node.nil?
+      return if node.nil?
 
       node.remove
     end

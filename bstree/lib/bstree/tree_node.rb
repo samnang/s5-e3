@@ -4,22 +4,21 @@ module BSTree
 
     def initialize(value)
       @value  = value
-      @children_count = 0
     end
 
     def add(value)
       fail DuplicatedValueError if value_exists?(value)
 
-      node = left_side?(value) ? @left : @right
+      node = left_or_right_node(value)
       if node.nil?
         node = TreeNode.new(value)
+
         if left_side?(value)
           @left = node
         else
           @right = node
         end
 
-        @children_count += 1
         node.parent = self
       else
         node.add(value)
@@ -29,41 +28,69 @@ module BSTree
     def find(value)
       return self if value_exists?(value)
       
-      node = left_side?(value) ? @left : @right
+      node = left_or_right_node(value)
 
       node.find(value) unless node.nil?
     end
 
     def remove
-      if @children_count == 0
-        if parent.left == self
-          parent.left = nil
-        else
-          parent.right = nil
-        end
-      elsif @children_count == 1
-        if @left
-          @value = @left.value
-          @left = nil
-        else
-          @value = @right.value
-          @right = nil
-        end
+      case children_count
+      when 0
+        remove_when_no_child
+      when 1
+        remove_when_one_child
+      when 2
+        remove_when_two_children
       end
     end
 
     private
 
+    def left_or_right_node(value)
+      left_side?(value) ? left : right
+    end
+
     def left_side?(value)
       value < @value
     end
 
-    def right_side?(value)
-      !left_side?(value)
-    end
-
     def value_exists?(value)
       value == @value
+    end
+
+    def children_count
+      [left, right].compact.count
+    end
+
+    def remove_when_no_child
+      if parent.left == self
+        parent.left = nil
+      else
+        parent.right = nil
+      end
+    end
+
+    def remove_when_one_child
+      node = left || right
+      @value = node.value
+      @left = nil
+      @right = nil
+    end
+
+    def remove_when_two_children
+      successor = find_smallest_successor
+      @value = successor.value
+
+      successor.parent.left = nil
+    end
+
+    def find_smallest_successor
+      successor = right
+      while successor.left
+        successor = successor.left
+      end
+
+      successor
     end
   end
 end
