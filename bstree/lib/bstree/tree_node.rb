@@ -36,10 +36,6 @@ module BSTree
       end
     end
 
-    def remove_child(child)
-      child == @left ? (@left = nil) : (@right = nil)
-    end
-
     private
 
     def same_value?(value)
@@ -59,7 +55,11 @@ module BSTree
     end
 
     def remove_when_no_child
-      parent.remove_child(self)
+      if parent.left == self
+        parent.left = nil
+      else
+        parent.right = nil
+      end
     end
 
     def remove_when_one_child
