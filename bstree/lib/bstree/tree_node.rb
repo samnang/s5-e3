@@ -2,31 +2,23 @@ module BSTree
   class TreeNode
     attr_accessor :value, :left, :right, :parent
 
-    def initialize(value)
+    def initialize(value, parent = nil)
       @value  = value
+      @parent = parent
     end
 
     def add(value)
-      fail DuplicatedValueError if value_exists?(value)
+      fail DuplicatedValueError if same_value?(value)
 
-      node = left_or_right_node(value)
-      if node.nil?
-        node = TreeNode.new(value)
-
-        if left_side?(value)
-          @left = node
-        else
-          @right = node
-        end
-
-        node.parent = self
+      if left_side?(value)
+        @left.nil? ? (@left = TreeNode.new(value, self)) : @left.add(value)
       else
-        node.add(value)
+        @right.nil? ? (@right = TreeNode.new(value, self)) : @right.add(value)
       end
     end
 
     def find(value)
-      return self if value_exists?(value)
+      return self if same_value?(value)
       
       node = left_or_right_node(value)
 
@@ -44,34 +36,34 @@ module BSTree
       end
     end
 
+    def remove_child(child)
+      child == @left ? (@left = nil) : (@right = nil)
+    end
+
     private
 
+    def same_value?(value)
+      value == @value
+    end
+
     def left_or_right_node(value)
-      left_side?(value) ? left : right
+      left_side?(value) ? @left : @right
     end
 
     def left_side?(value)
       value < @value
     end
 
-    def value_exists?(value)
-      value == @value
-    end
-
     def children_count
-      [left, right].compact.count
+      [@left, @right].compact.count
     end
 
     def remove_when_no_child
-      if parent.left == self
-        parent.left = nil
-      else
-        parent.right = nil
-      end
+      parent.remove_child(self)
     end
 
     def remove_when_one_child
-      node = left || right
+      node = @left || @right
       @value = node.value
       @left = nil
       @right = nil
@@ -85,7 +77,7 @@ module BSTree
     end
 
     def find_smallest_successor
-      successor = right
+      successor = @right
       while successor.left
         successor = successor.left
       end
