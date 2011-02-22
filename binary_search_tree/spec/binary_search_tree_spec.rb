@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe BSTree::Tree do
-  let(:tree) { BSTree::Tree.new }
+describe BinarySearchTree do
+  let(:tree) { BinarySearchTree.new }
 
   describe "#add" do
     it "should be able to add in different styles" do
@@ -16,7 +16,7 @@ describe BSTree::Tree do
     end
 
     it "should raise exception when adding duplicated value" do
-      lambda { tree << 1 << 1 }.should raise_error BSTree::DuplicatedValueError
+      lambda { tree << 1 << 1 }.should raise_error BinarySearchTree::DuplicatedValueError
     end
   end
 

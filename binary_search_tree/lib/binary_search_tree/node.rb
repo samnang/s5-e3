@@ -1,5 +1,6 @@
-module BSTree
-  class TreeNode
+class BinarySearchTree
+  class Node
+
     attr_accessor :value, :left, :right, :parent
 
     def initialize(value, parent = nil)
@@ -11,15 +12,15 @@ module BSTree
       fail DuplicatedValueError if same_value?(value)
 
       if left_side?(value)
-        @left.nil? ? (@left = TreeNode.new(value, self)) : @left.add(value)
+        @left.nil? ? (@left = Node.new(value, self)) : @left.add(value)
       else
-        @right.nil? ? (@right = TreeNode.new(value, self)) : @right.add(value)
+        @right.nil? ? (@right = Node.new(value, self)) : @right.add(value)
       end
     end
 
     def find(value)
       return self if same_value?(value)
-      
+
       node = left_or_right_node(value)
 
       node.find(value) unless node.nil?
@@ -71,7 +72,7 @@ module BSTree
 
     def remove_when_two_children
       successor = find_smallest_successor
-      @value = successor.value
+        @value = successor.value
 
       successor.parent.left = nil
     end

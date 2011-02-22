@@ -1,7 +1,6 @@
-$:.unshift File.expand_path('..', __FILE__)
 $:.unshift File.expand_path('../../lib', __FILE__)
 
-require 'bstree'
+require 'binary_search_tree'
 require 'rspec'
 
 RSpec::Matchers.define :have_value do |expected|
