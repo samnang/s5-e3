@@ -5,39 +5,29 @@ class BinarySearchTree
 
   attr_accessor :root
 
-  def add(value)
-    if root_empty?
-      @root = Node.new(value)
-    else
-      @root.add(value)
-    end
-  end
-
   def <<(value)
-    add(value)
+    if @root
+      @root.add(value)
+    else
+      @root = Node.new(value)
+    end
 
     self
   end
 
   def find(value)
-    return if root_empty?
+    return unless @root
 
     @root.find(value)
   end
 
   alias :[] :find
 
-  def remove(value)
+  def delete(value)
     node = find(value)
 
     return if node.nil?
 
-    node.remove
-  end
-
-  private
-
-  def root_empty?
-    @root.nil?
+    node.delete
   end
 end

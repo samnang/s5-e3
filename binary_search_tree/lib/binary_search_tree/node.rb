@@ -1,84 +1,81 @@
 class BinarySearchTree
   class Node
 
-    attr_accessor :value, :left, :right, :parent
+    attr_accessor :value, :branches,:parent
 
     def initialize(value, parent = nil)
       @value  = value
       @parent = parent
+      @branches = {}
+    end
+
+    def left
+      branches[:left]
+    end
+
+    def right
+      branches[:right]
     end
 
     def add(value)
-      fail DuplicatedValueError if same_value?(value)
+      raise DuplicatedValueError if @value == value
 
-      if left_side?(value)
-        @left.nil? ? (@left = Node.new(value, self)) : @left.add(value)
+      side = find_side(value)
+      branch = branches[side]
+      if branch
+        branch.add(value)
       else
-        @right.nil? ? (@right = Node.new(value, self)) : @right.add(value)
+        branches[side] = Node.new(value, self)
       end
     end
 
     def find(value)
-      return self if same_value?(value)
+      return self if @value == value
 
-      node = left_or_right_node(value)
+      branch = left_side?(value) ? left : right
 
-      node.find(value) unless node.nil?
+      branch.find(value) if branch
     end
 
-    def remove
-      case children_count
+    def delete
+      case branches.count
       when 0
-        remove_when_no_child
+        delete_when_no_child
       when 1
-        remove_when_one_child
+        delete_when_one_child
       when 2
-        remove_when_two_children
+        delete_when_two_children
       end
     end
 
     private
 
-    def same_value?(value)
-      value == @value
-    end
-
-    def left_or_right_node(value)
-      left_side?(value) ? @left : @right
+    def find_side(value)
+      left_side?(value) ? :left : :right
     end
 
     def left_side?(value)
       value < @value
     end
 
-    def children_count
-      [@left, @right].compact.count
+    def delete_when_no_child
+      parent.branches.delete_if {|_, branch| branch == self }
     end
 
-    def remove_when_no_child
-      if parent.left == self
-        parent.left = nil
-      else
-        parent.right = nil
-      end
+    def delete_when_one_child
+      @value = branches.first.last.value
+      branches.clear
     end
 
-    def remove_when_one_child
-      node = @left || @right
-      @value = node.value
-      @left = nil
-      @right = nil
-    end
-
-    def remove_when_two_children
+    def delete_when_two_children
       successor = find_smallest_successor
-        @value = successor.value
+      @value = successor.value
 
-      successor.parent.left = nil
+      successor.parent.branches.delete(:left)
     end
 
     def find_smallest_successor
-      successor = @right
+      successor = right
       while successor.left
         successor = successor.left
       end

@@ -4,10 +4,8 @@ describe BinarySearchTree do
   let(:tree) { BinarySearchTree.new }
 
   describe "#add" do
-    it "should be able to add in different styles" do
-      tree.add(3)
-      tree.add(4)
-      tree << 1 << 2
+    it "should be able to add values in chainable" do
+      tree << 3 << 4 << 1 << 2
 
       tree.root.should have_value 3
       tree.root.right.should have_value 4
@@ -39,12 +37,12 @@ describe BinarySearchTree do
     end
   end
 
-  describe "#remove" do
+  describe "#delete" do
     context "no child" do
-      it "should remove the node" do
+      it "should delete the node" do
         tree << 2 << 1 << 3
 
-        tree.remove(1)
+        tree.delete(1)
 
         tree[1].should be_nil
         tree.root.left.should be_nil
@@ -52,10 +50,10 @@ describe BinarySearchTree do
     end
 
     context "one child" do
-      it "should update node\'s value to its child\'s value and remove child node" do
+      it "should update node\'s value to its child\'s value and delete child node" do
         tree << 2 << 1 << 3 << 4
 
-        tree.remove(3)
+        tree.delete(3)
 
         tree[4].parent.should have_value tree.root.value
         tree.root.right.should have_value 4
@@ -66,7 +64,7 @@ describe BinarySearchTree do
       it "should replace its value with its successor\'s value and fix the successor\'s parent\'s child" do
         tree << 8 << 3 << 1 << 6 << 4 << 7 << 10
 
-        tree.remove(3)
+        tree.delete(3)
 
         tree.root.left.should have_value 4
         tree[4].parent.should have_value tree.root.value
