@@ -37,6 +37,10 @@ class BinarySearchTree
       branch.find(value) if branch
     end
 
+    def find_smallest_successor
+      left ? left.find_smallest_successor : self
+    end
+
     def delete
       case branches.count
       when 0
@@ -68,19 +72,10 @@ class BinarySearchTree
     end
 
     def delete_when_two_children
-      successor = find_smallest_successor
+      successor = right.find_smallest_successor
       @value = successor.value
 
       successor.parent.branches.delete(:left)
-    end
-
-    def find_smallest_successor
-      successor = right
-      while successor.left
-        successor = successor.left
-      end
-
-      successor
     end
   end
 end
