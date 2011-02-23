@@ -37,20 +37,6 @@ describe BinarySearchTree do
     end
   end
 
-  describe "#find_smallest_successor" do
-    it "should return itself if no left child" do
-      tree << 5 << 6
-
-      tree.root.find_smallest_successor.should have_value 5
-    end
-
-    it "should return the smallest value" do
-      tree << 5 << 3 << 6 << 2
-
-      tree.root.find_smallest_successor.should have_value 2
-    end
-  end
-
   describe "#delete" do
     context "no child" do
       it "should delete the node" do
