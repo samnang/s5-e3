@@ -32,7 +32,7 @@ class BinarySearchTree
     def find(value)
       return self if @value == value
 
-      branch = left_side?(value) ? left : right
+      branch = right_side?(value) ? right : left
 
       branch.find(value) if branch
     end
@@ -51,11 +51,11 @@ class BinarySearchTree
     private
 
     def find_side(value)
-      left_side?(value) ? :left : :right
+      right_side?(value) ? :right : :left
     end
 
-    def left_side?(value)
-      value < @value
+    def right_side?(value)
+      @value < value
     end
 
     def delete_when_no_child
